@@ -1,3 +1,19 @@
+/*
+ *  +=============== Presentación ===============+
+ *
+ *  Enunciado del problema:
+ *  Realizar un programa C++ que realice una conversion de numero a texto usando un algoritmo de Divide y Venceras. 
+
+ *  Autores (ID - Nombre):
+ *  1113891 - Alan Arturo Sosa Del Villar
+ *  1114790 - Gabriel Antonio Alba Natera
+ *  1114290 - Angel Antonio Orona Pimentel
+ *  Radhames - Ventura 1116252
+ *
+ *  Fecha en la que se desarrollo el programa (dd/mm/aa):
+ *  06/11/2023
+ */
+
 using namespace std;
 
 #include <iostream>
@@ -5,19 +21,23 @@ using namespace std;
 
 
 bool EsNumeroValido(string str) {
-    if (str.empty() ) {
+    if (str.empty()) {
         return false;
     }
 
     try {
         double numero = stod(str);
-        return true; // Si la conversión fue exitosa, es un número decimal válido.
-    }
-    catch (const invalid_argument& e) 
-    {
+        // Verificar si el número está dentro del rango deseado
+        if (numero >= 0.0 && numero <= 999999999.99) {
+            return true; // Si la conversión fue exitosa y está en el rango, es válido.
+        } else {
+            return false; // Si el número no está en el rango, no es válido.
+        }
+    } catch (const invalid_argument& e) {
         return false; // Si la conversión falla, no es un número decimal válido.
     }
 }
+
 int* obtenerprimerasubdivision(double num) {
     int* arreglo = new int[7]; // Asigna dinámicamente un arreglo de 7 enteros
 
@@ -25,36 +45,46 @@ int* obtenerprimerasubdivision(double num) {
     int parte_entera = static_cast<int>(num);
 
     // Obtener la parte decimal del número
-    double parte_decimal = num - parte_entera;
+    int parte_decimal_entera = static_cast<int>((num - parte_entera) * 100); // Multiplicar por 100 para obtener los centavos como número entero
 
     // Calcular la subdivisión
-    arreglo[0] = (parte_entera / 100000000) ; // Centenas de millones
+    arreglo[0] = (parte_entera / 100000000); // Centenas de millones
     arreglo[1] = (parte_entera % 100000000) / 1000000; // Decenas y unidades de millón
-    arreglo[2] = ((parte_entera % 1000000) / 100000 ); // Centenas de miles
+    arreglo[2] = ((parte_entera % 1000000) / 100000); // Centenas de miles
     arreglo[3] = (parte_entera % 100000) / 1000; // Decenas y unidades de miles
     arreglo[4] = (parte_entera / 100) % 10; // Centenas
     arreglo[5] = parte_entera % 100; // Decenas y unidades
-    arreglo[6] = parte_decimal * 100; // Decimales
+    arreglo[6] = parte_decimal_entera; // Centavos como número entero
+
     return arreglo;
 }
 
-string CentenasEnTexto(int centena) 
+string CentenasEnTexto(int centena, bool cientos) 
 {
-    string unidades[] = {"Cero", "Cien", "Doscientos", "Trescientos", "Cuatrocientos", "Quinientos", "Seiscientos", "Setecientos", "Ochocientos", "Novecientos"};
+    string unidades[] = {"", "Cien", "Doscientos", "Trescientos", "Cuatrocientos", "Quinientos", "Seiscientos", "Setecientos", "Ochocientos", "Novecientos"};
+    if (cientos)
+    {
+    unidades[1] = "Ciento";
+    }
 
     return unidades[centena];
 }
 
-string DecenasUnidadesEnTexto(int numero) {
+string DecenasUnidadesEnTexto(int numero, bool cent) {
     string unidades[] = {"Cero", "Uno", "Dos", "Tres", "Cuatro", "Cinco", "Seis", "Siete", "Ocho", "Nueve"};
     string especiales[] = {"Diez", "Once", "Doce", "Trece", "Catorce", "Quince", "Dieciséis", "Diecisiete", "Dieciocho", "Diecinueve"};
     string decenas[] = {"", "", "Veinti", "Treinta", "Cuarenta", "Cincuenta", "Sesenta", "Setenta", "Ochenta", "Noventa"};
 
     string texto;
 
-    if (numero == 0) {
+    if(numero == 1)
+    {
+        unidades[1] = "Un";
+    }
+
+    if (numero == 0 && cent == true) {
         texto = "Cero";
-    } else if (numero < 10) {
+    } else if (numero < 10 && numero > 0) {
         texto = unidades[numero];
     } else if (numero < 20) {
         texto = especiales[numero - 10];
@@ -81,97 +111,50 @@ string DecenasUnidadesEnTexto(int numero) {
 
 void finality(int* arr)
 {
-    string texto;
-    string nomenclatura[] = {" Millones ", " mil "," Pesos dominicanos con ", " Centimos "};
+    string texto = "";
 
-    for (size_t i = 0; i < 7; i++)
+    if (arr[0] + arr[1] != 0)
     {
-        if(arr[i] == 0 && i != 6)
-        {
-            continue;
-        }
-        else
-        {
-            if(i % 2 == 0 && i < 6)
-            {
-                texto += CentenasEnTexto(arr[i]);
-                if (arr[i] == 1 && arr[i+1] != 0)
-                {
-                    texto += "to";
-                }
-                
-            }
-            else
-            {
-                texto += DecenasUnidadesEnTexto(arr[i]);
-            }
-
-            if (i == 1)
-            {
-                texto += nomenclatura[0];
-            }
-            else if (i == 3)
-            {
-                texto += nomenclatura[1];
-
-            }
-            else if (i == 5)
-            {
-                texto += nomenclatura[2];
-            }
-            
-            else if(i == 6)
-            {
-                texto += nomenclatura[3] + " ";
-
-            }
-            else
-            {            
-                texto += " ";
-
-            }
-            
-            
-        }
+        texto += CentenasEnTexto(arr[0], arr[1] > 0) + " " + DecenasUnidadesEnTexto(arr[1], arr[0] != 0) + ((arr[1] > 1) ? "millones" : "millón");
     }
+    if (arr[2] + arr[3] != 0)
+    {
+        texto += CentenasEnTexto(arr[2], arr[3] > 0) + " " + DecenasUnidadesEnTexto(arr[3], arr[2] != 0) + " Mil ";
+    }
+    if (arr[4] + arr[5] != 0)
+    {
+        texto += CentenasEnTexto(arr[4], arr[5] > 0) + " " + DecenasUnidadesEnTexto(arr[5], false);
+    }
+    
+    texto += " De Pesos Dominicanos Con " + DecenasUnidadesEnTexto(arr[6], true) + " Centimos ";
 
     cout << texto;
-    
 }
-
 int main() {
-    double numero;
-    string entrada;
-    bool invalido = true;
+    while (true) {
+        double numero;
+        string entrada;
+        cout << "Ingresa un numero valido (o -1 para salir): ";
+        getline(cin, entrada);
 
-    while (invalido) {
-        cout << "Ingresa un número válido: ";   
-        cin >> entrada;
+        if (entrada == "-1") {
+            break;  // Salir del bucle si se ingresa -1
+        }
 
         if (EsNumeroValido(entrada)) {
             numero = stod(entrada);
-            break;
+            int* resultado = obtenerprimerasubdivision(numero);
+
+            cout << endl;
+            finality(resultado);
+            delete[] resultado;
         } else {
-            cout << "No has ingresado un número válido. Inténtalo de nuevo." << endl;
+            cout << "No has ingresado un numero valido. Intentalo de nuevo." << endl;
         }
+
+        cout << endl;
     }
-
-
-    int* resultado = obtenerprimerasubdivision(numero);
-
-
-    for (size_t i = 0; i < 7; i++)
-    {
-        cout << resultado[i] << " ";
-    }
-    
-    cout << endl;
-
-    finality(resultado);
-
-    delete[] resultado;
 
     return 0;
 }
-
 
