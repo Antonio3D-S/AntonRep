@@ -70,14 +70,14 @@ string CentenasEnTexto(int centena, bool cientos)
     return unidades[centena];
 }
 
-string DecenasUnidadesEnTexto(int numero, bool cent) {
-    string unidades[] = {"Cero", "Uno", "Dos", "Tres", "Cuatro", "Cinco", "Seis", "Siete", "Ocho", "Nueve"};
+string DecenasUnidadesEnTexto(int numero,bool un_uno, bool cent) {
+    string unidades[] = {" ", "Uno", "Dos", "Tres", "Cuatro", "Cinco", "Seis", "Siete", "Ocho", "Nueve"};
     string especiales[] = {"Diez", "Once", "Doce", "Trece", "Catorce", "Quince", "Dieciséis", "Diecisiete", "Dieciocho", "Diecinueve"};
     string decenas[] = {"", "", "Veinti", "Treinta", "Cuarenta", "Cincuenta", "Sesenta", "Setenta", "Ochenta", "Noventa"};
 
     string texto;
 
-    if(numero == 1)
+    if(un_uno == 1)
     {
         unidades[1] = "Un";
     }
@@ -115,18 +115,20 @@ void finality(int* arr)
 
     if (arr[0] + arr[1] != 0)
     {
-        texto += CentenasEnTexto(arr[0], arr[1] > 0) + " " + DecenasUnidadesEnTexto(arr[1], arr[0] != 0) + ((arr[1] > 1) ? "millones" : "millón");
+        texto += CentenasEnTexto(arr[0], arr[1] > 0) + " " + DecenasUnidadesEnTexto(arr[1], arr[0] == 0, false) + ((arr[0] + arr[1] > 1) ? " millones " : " millón ");
     }
     if (arr[2] + arr[3] != 0)
     {
-        texto += CentenasEnTexto(arr[2], arr[3] > 0) + " " + DecenasUnidadesEnTexto(arr[3], arr[2] != 0) + " Mil ";
+        texto += CentenasEnTexto(arr[2], arr[3] > 0) + " ";
+        
+        texto += ((arr[2] == 0 && arr[3] == 1) ? "" : DecenasUnidadesEnTexto(arr[3], arr[2] == 0, false)) + " Mil ";
     }
     if (arr[4] + arr[5] != 0)
     {
-        texto += CentenasEnTexto(arr[4], arr[5] > 0) + " " + DecenasUnidadesEnTexto(arr[5], false);
+        texto += CentenasEnTexto(arr[4], arr[5] > 0) + " " + DecenasUnidadesEnTexto(arr[5], arr[4] == 0, false);
     }
     
-    texto += " De Pesos Dominicanos Con " + DecenasUnidadesEnTexto(arr[6], true) + " Centimos ";
+    texto += " Pesos Dominicanos Con " + DecenasUnidadesEnTexto(arr[6], true, true) + " Centimos ";
 
     cout << texto;
 }
