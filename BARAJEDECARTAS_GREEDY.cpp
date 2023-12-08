@@ -139,10 +139,59 @@ void SeleccionarCarta() {
         mazo = MoverCartasIrregularmente(mazo);
     }
 }
+bool EsNumeroValido(string str) {
+    bool valido = true;
+
+    if (str.empty()) {
+        return false;
+    }
+
+    for (char c : str) {
+        if (!isdigit(c)) {
+            return false;
+        }
+    }
+    return valido;
+}
+
+string IngresarNumeroValido() {
+    string entrada;
+    bool valido = false;
+
+    while (!valido) {
+        cout << "Ingrese un número válido: ";
+        cin >> entrada;
+
+        if (EsNumeroValido(entrada)) {
+            valido = true;
+        } else {
+            cout << "Entrada no válida. Por favor, ingrese un número válido." << endl;
+        }
+    }
+
+    return entrada;
+    }
+
+void Movimientos_Iniciales()
+{ 
+
+string entrada = IngresarNumeroValido();
+
+int movimientos = stoi(entrada);
+
+for (size_t i = 0; i < movimientos; i++)
+{
+    mazo = MoverCartasIrregularmente(mazo);
+}
+
+
+}
 
 // Función principal que inicializa las cartas y realiza la selección hasta tener 52 en la solución.
 int main() {
     InicializarMazo();
+
+    Movimientos_Iniciales();
 
     while (solucion.size() < 52) {
         SeleccionarCarta();
