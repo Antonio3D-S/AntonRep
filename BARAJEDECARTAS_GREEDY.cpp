@@ -114,7 +114,7 @@ int ContarRepeticiones(const list<Carta>& conjunto, const Carta& cartaSelecciona
 // Función objetivo: Maximizar el desorden penalizando la repetición cercana de números.
 int EvaluarDesorden(const list<Carta>& solucionActual, const Carta& cartaSeleccionada) {
     int penalizacion = 0;
-    list<Carta> ultimasCuatroCartas = ObtenerUltimasCartas(solucionActual, 6);
+    list<Carta> ultimasCuatroCartas = ObtenerUltimasCartas(solucionActual, 7);
 
     for (const auto& carta : ultimasCuatroCartas) {
         if (SonIguales(carta, cartaSeleccionada)) {
