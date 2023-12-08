@@ -1,7 +1,5 @@
 #include <iostream>
 #include <list>
-#include <algorithm>
-#include <random>
 
 using namespace std;
 
@@ -28,7 +26,8 @@ void ImprimirLista(const list<Carta>& lista, string mensaje) {
     for (const auto& carta : lista) {
         ImprimirCarta(carta);
     }
-    cout << endl;
+    cout << endl << endl;
+
 }
 
 // Función para verificar si dos cartas son iguales.
@@ -115,7 +114,7 @@ int ContarRepeticiones(const list<Carta>& conjunto, const Carta& cartaSelecciona
 // Función objetivo: Maximizar el desorden penalizando la repetición cercana de números.
 int EvaluarDesorden(const list<Carta>& solucionActual, const Carta& cartaSeleccionada) {
     int penalizacion = 0;
-    list<Carta> ultimasCuatroCartas = ObtenerUltimasCartas(solucionActual, 4);
+    list<Carta> ultimasCuatroCartas = ObtenerUltimasCartas(solucionActual, 6);
 
     for (const auto& carta : ultimasCuatroCartas) {
         if (SonIguales(carta, cartaSeleccionada)) {
