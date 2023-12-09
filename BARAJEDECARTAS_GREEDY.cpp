@@ -114,7 +114,7 @@ int ContarRepeticiones(const list<Carta>& conjunto, const Carta& cartaSelecciona
 // Función objetivo: Maximizar el desorden penalizando la repetición cercana de números.
 int EvaluarDesorden(const list<Carta>& solucionActual, const Carta& cartaSeleccionada) {
     int penalizacion = 0;
-    list<Carta> ultimasCuatroCartas = ObtenerUltimasCartas(solucionActual, 7);
+    list<Carta> ultimasCuatroCartas = ObtenerUltimasCartas(solucionActual, 6);
 
     for (const auto& carta : ultimasCuatroCartas) {
         if (SonIguales(carta, cartaSeleccionada)) {
@@ -135,65 +135,35 @@ void SeleccionarCarta() {
         ImprimirLista(solucion, "Solución Actual: ");
         mazo.pop_front();
     } else {
-        mazo = MoverCartasIrregularmente(mazo);
-    }
-}
-bool EsNumeroValido(string str) {
-    bool valido = true;
-
-    if (str.empty()) {
-        return false;
-    }
-
-    for (char c : str) {
-        if (!isdigit(c)) {
-            return false;
-        }
-    }
-    return valido;
-}
-
-string IngresarNumeroValido() {
-    string entrada;
-    bool valido = false;
-
-    while (!valido) {
-        cout << "Ingrese un número válido: ";
-        cin >> entrada;
-
-        if (EsNumeroValido(entrada)) {
-            valido = true;
+        candidato = mazo.back();
+        penalizacion = EvaluarDesorden(solucion, candidato);
+        
+        if (penalizacion == 0) {
+            solucion.push_back(candidato);
+            ImprimirLista(solucion, "Solución Actual: ");
+            mazo.pop_back();
         } else {
-            cout << "Entrada no válida. Por favor, ingrese un número válido." << endl;
+            mazo = MoverCartasIrregularmente(mazo);
+            SeleccionarCarta();
         }
     }
-
-    return entrada;
-    }
-
-void Movimientos_Iniciales()
-{ 
-
-string entrada = IngresarNumeroValido();
-
-int movimientos = stoi(entrada);
-
-for (size_t i = 0; i < movimientos; i++)
-{
-    mazo = MoverCartasIrregularmente(mazo);
-}
-
-
+    
+    
 }
 
 // Función principal que inicializa las cartas y realiza la selección hasta tener 52 en la solución.
-int main() {
+int main(){
+
     InicializarMazo();
 
-    Movimientos_Iniciales();
-
-    while (solucion.size() < 52) {
+    for (size_t i = 0; i < 3; i++)
+    {
+        mazo = MoverCartasIrregularmente(mazo);
+    }
+    while (solucion.size() < 52) 
+    {
         SeleccionarCarta();
+        ImprimirLista(mazo, "Restantes: ");
     }
 
     return 0;
