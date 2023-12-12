@@ -113,17 +113,6 @@ list<Carta> MoverCartasIrregularmente(const list<Carta>& lista) {
     return listaIrregular;
 }
 
-// Función para verificar cuántas veces una carta se repite en un conjunto de cartas.
-int ContarRepeticiones(const list<Carta>& conjunto, const Carta& cartaSeleccionada) {
-    int repeticiones = 0;
-    for (const auto& carta : conjunto) {
-        if (SonIguales(carta, cartaSeleccionada)) {
-            repeticiones++;
-        }
-    }
-    return repeticiones;
-}
-
 // Función objetivo: Maximizar el desorden penalizando la repetición cercana de números.
 int EvaluarDesorden(const list<Carta>& solucionActual, const Carta& cartaSeleccionada) {
     int penalizacion = 0;
