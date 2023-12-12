@@ -125,7 +125,6 @@ int EvaluarDesorden(const list<Carta>& solucionActual, const Carta& cartaSelecci
     return penalizacion;
 }
 
-int asci = 0;
 
 // Función para seleccionar y agregar una carta a la solución.
 void SeleccionarCarta() {
@@ -146,7 +145,6 @@ void SeleccionarCarta() {
             mazo.pop_back();
         } else {
             mazo = MoverCartasIrregularmente(mazo);
-            asci ++;
             cout<< endl << asci << endl;
             SeleccionarCarta();
         }
@@ -159,11 +157,8 @@ void SeleccionarCarta() {
 int main(){
 
     InicializarMazo();
-    
-    
-    // NOTACION O(n^2)
-    
-    for (size_t i = 0; i < 6; i++)
+        
+    for (size_t i = 0; i < 3; i++)
     {
         mazo = MoverCartasIrregularmente(mazo);
     }
