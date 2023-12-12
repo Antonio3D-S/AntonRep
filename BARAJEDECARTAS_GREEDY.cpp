@@ -16,7 +16,8 @@
 
 
 #include <iostream>
-#include <list>
+#include <list> 
+#include <string>
 
 using namespace std;
 
@@ -32,7 +33,7 @@ list<Carta> mazo, solucion;
 // Función para imprimir una carta.
 void ImprimirCarta(const Carta& c) {
     const char* simbolosPalo[] = {"♠", "♣", "♦", "♥"};
-    const char* numStr = (c.NUM == 11) ? "J" : (c.NUM == 12) ? "Q" : (c.NUM == 13) ? "K" : to_string(c.NUM).c_str();
+    const char* numStr = (c.NUM == 1) ? "A" : (c.NUM == 11) ? "J" : (c.NUM == 12) ? "Q" : (c.NUM == 13) ? "K" : to_string(c.NUM).c_str();
 
     cout << " | " << numStr << simbolosPalo[c.TIPO - 1] << " | ";
 }
@@ -107,11 +108,6 @@ list<Carta> MoverCartasIrregularmente(const list<Carta>& lista) {
             listaIrregular.push_back(*itPrimeraMitad);
             ++itPrimeraMitad;
         }
-
-        if (itSegundaMitad != lista.end()) {
-            listaIrregular.push_back(*itSegundaMitad);
-            ++itSegundaMitad;
-        }
     }
 
     return listaIrregular;
@@ -131,9 +127,9 @@ int ContarRepeticiones(const list<Carta>& conjunto, const Carta& cartaSelecciona
 // Función objetivo: Maximizar el desorden penalizando la repetición cercana de números.
 int EvaluarDesorden(const list<Carta>& solucionActual, const Carta& cartaSeleccionada) {
     int penalizacion = 0;
-    list<Carta> ultimasCuatroCartas = ObtenerUltimasCartas(solucionActual, 6);
+    list<Carta> UltimasCartas = ObtenerUltimasCartas(solucionActual, 6);
 
-    for (const auto& carta : ultimasCuatroCartas) {
+    for (const auto& carta : UltimasCartas) {
         if (SonIguales(carta, cartaSeleccionada)) {
             penalizacion++;
         }
@@ -141,7 +137,6 @@ int EvaluarDesorden(const list<Carta>& solucionActual, const Carta& cartaSelecci
 
     return penalizacion;
 }
-
 
 // Función para seleccionar y agregar una carta a la solución.
 void SeleccionarCarta() {
@@ -163,6 +158,7 @@ void SeleccionarCarta() {
         } else {
             mazo = MoverCartasIrregularmente(mazo);
             SeleccionarCarta();
+
         }
     }
     
