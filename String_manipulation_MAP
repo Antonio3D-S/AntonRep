@@ -1,40 +1,63 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <cctype>
 
 using namespace std;
 
-int main()
-{
+bool EsNumeroValido(string str) {
+    if (str.length() != 1) {
+        return false;
+    }
+
+    char c = str[0];
+    return (c == '0' || c == '1');
+}
+
+struct FrecuenciaCaracteres {
+    map<char, int> frecuenciaCaracteres;
+    int totalCaracteres = 0;
+
+    void contarFrecuencias(const string& texto, bool soloNumerosYLetras, bool incluirEspacios) {
+        for (char caracter : texto) {
+            if ((!soloNumerosYLetras || (isdigit(caracter) || isalpha(caracter))) && (incluirEspacios || !isspace(caracter))) {
+                frecuenciaCaracteres[caracter]++;
+                totalCaracteres++;
+            }
+        }
+    }
+
+    void mostrarResultados() const {
+        cout << "Frecuencia de cada caracter en el texto:" << endl;
+        for (const auto& entry : frecuenciaCaracteres) {
+            char caracter = entry.first;
+            int apariciones = entry.second;
+            double porcentaje = (static_cast<double>(apariciones) / totalCaracteres) * 100;
+            cout << "El caracter '" << caracter << "' aparece con un porcentaje de: " << porcentaje << "%" << endl;
+        }
+    }
+};
+
+int main() {
     cout << "Ingrese un texto: ";
     string texto;
     getline(cin, texto);
 
-    // Crear un mapa para almacenar la frecuencia de cada caracter.
-    // La clave es el caracter (char) y el valor es la cantidad de veces que aparece en el texto (int).
-    map<char, int> frecuenciaCaracteres;
+    string opcionNumerosLetras;
+    do {
+        cout << "¿Desea aceptar todos los caracteres (0) o solo números y letras (1)? ";
+        cin >> opcionNumerosLetras;
+    } while (!EsNumeroValido(opcionNumerosLetras));
 
-    // Contar la cantidad total de caracteres en el texto
-    int totalCaracteres = 0;
+    string opcionEspacios;
+    do {
+        cout << "¿Desea incluir espacios (1) o excluirlos (0)? ";
+        cin >> opcionEspacios;
+    } while (!EsNumeroValido(opcionEspacios));
 
-    // Calcular la frecuencia de cada caracter en el texto
-    for (char caracter : texto) {
-        // Incrementar la frecuencia del caracter en el mapa
-        frecuenciaCaracteres[caracter]++;
-        // Incrementar la cantidad total de caracteres
-        totalCaracteres++;
-    }
-
-    // Calcular el porcentaje de aparición para cada caracter
-    cout << "Frecuencia de cada caracter en el texto:" << endl;
-    for (const auto& entry : frecuenciaCaracteres) {
-        char caracter = entry.first;
-        int apariciones = entry.second;
-        // Calcular el porcentaje de aparición del caracter
-        double porcentaje = (static_cast<double>(apariciones) / totalCaracteres) * 100;
-        // Mostrar el resultado
-        cout << "El caracter '" << caracter << "' aparece con un porcentaje de: " << porcentaje << "%" << endl;
-    }
+    FrecuenciaCaracteres frecuencia;
+    frecuencia.contarFrecuencias(texto, opcionNumerosLetras == "1", opcionEspacios == "1");
+    frecuencia.mostrarResultados();
 
     return 0;
 }
