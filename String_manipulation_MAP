@@ -1,0 +1,40 @@
+#include <iostream>
+#include <string>
+#include <map>
+
+using namespace std;
+
+int main()
+{
+    cout << "Ingrese un texto: ";
+    string texto;
+    getline(cin, texto);
+
+    // Crear un mapa para almacenar la frecuencia de cada caracter.
+    // La clave es el caracter (char) y el valor es la cantidad de veces que aparece en el texto (int).
+    map<char, int> frecuenciaCaracteres;
+
+    // Contar la cantidad total de caracteres en el texto
+    int totalCaracteres = 0;
+
+    // Calcular la frecuencia de cada caracter en el texto
+    for (char caracter : texto) {
+        // Incrementar la frecuencia del caracter en el mapa
+        frecuenciaCaracteres[caracter]++;
+        // Incrementar la cantidad total de caracteres
+        totalCaracteres++;
+    }
+
+    // Calcular el porcentaje de aparición para cada caracter
+    cout << "Frecuencia de cada caracter en el texto:" << endl;
+    for (const auto& entry : frecuenciaCaracteres) {
+        char caracter = entry.first;
+        int apariciones = entry.second;
+        // Calcular el porcentaje de aparición del caracter
+        double porcentaje = (static_cast<double>(apariciones) / totalCaracteres) * 100;
+        // Mostrar el resultado
+        cout << "El caracter '" << caracter << "' aparece con un porcentaje de: " << porcentaje << "%" << endl;
+    }
+
+    return 0;
+}
