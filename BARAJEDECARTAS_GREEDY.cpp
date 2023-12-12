@@ -145,7 +145,6 @@ void SeleccionarCarta() {
             mazo.pop_back();
         } else {
             mazo = MoverCartasIrregularmente(mazo);
-            cout<< endl << asci << endl;
             SeleccionarCarta();
         }
     }
