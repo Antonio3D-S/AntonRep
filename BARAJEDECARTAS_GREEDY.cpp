@@ -33,7 +33,7 @@ list<Carta> mazo, solucion;
 // Función para imprimir una carta.
 void ImprimirCarta(const Carta& c) {
     const char* nombresPalo[] = {"Espadas", "Tréboles", "Diamantes", "Corazones"};
-    const char* numStr = (c.NUM == 1) ? "A" : (c.NUM == 11) ? "J" : (c.NUM == 12) ? "Q" : (c.NUM == 13) ? "K" : std::to_string(c.NUM).c_str();
+    const char* numStr = (c.NUM == 1) ? "A" : (c.NUM == 11) ? "J" : (c.NUM == 12) ? "Q" : (c.NUM == 13) ? "K" : to_string(c.NUM).c_str();
 
     std::cout << " | " << numStr << " de " << nombresPalo[c.TIPO - 1] << " | ";
 }
@@ -113,17 +113,6 @@ list<Carta> MoverCartasIrregularmente(const list<Carta>& lista) {
     }
 
     return listaIrregular;
-}
-
-// Función para verificar cuántas veces una carta se repite en un conjunto de cartas.
-int ContarRepeticiones(const list<Carta>& conjunto, const Carta& cartaSeleccionada) {
-    int repeticiones = 0;
-    for (const auto& carta : conjunto) {
-        if (SonIguales(carta, cartaSeleccionada)) {
-            repeticiones++;
-        }
-    }
-    return repeticiones;
 }
 
 // Función objetivo: Maximizar el desorden penalizando la repetición cercana de números.
