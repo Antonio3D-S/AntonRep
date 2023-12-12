@@ -32,17 +32,19 @@ list<Carta> mazo, solucion;
 
 // Función para imprimir una carta.
 void ImprimirCarta(const Carta& c) {
-    const char* simbolosPalo[] = {"♠", "♣", "♦", "♥"};
-    const char* numStr = (c.NUM == 1) ? "A" : (c.NUM == 11) ? "J" : (c.NUM == 12) ? "Q" : (c.NUM == 13) ? "K" : to_string(c.NUM).c_str();
+    const char* nombresPalo[] = {"Espadas", "Tréboles", "Diamantes", "Corazones"};
+    const char* numStr = (c.NUM == 1) ? "A" : (c.NUM == 11) ? "J" : (c.NUM == 12) ? "Q" : (c.NUM == 13) ? "K" : std::to_string(c.NUM).c_str();
 
-    cout << " | " << numStr << simbolosPalo[c.TIPO - 1] << " | ";
+    std::cout << " | " << numStr << " de " << nombresPalo[c.TIPO - 1] << " | ";
 }
+
 
 // Función para imprimir una lista de cartas.
 void ImprimirLista(const list<Carta>& lista, string mensaje) {
     cout << mensaje;
     for (const auto& carta : lista) {
         ImprimirCarta(carta);
+        cout << endl;
     }
     cout << endl << endl;
 
@@ -113,6 +115,17 @@ list<Carta> MoverCartasIrregularmente(const list<Carta>& lista) {
     return listaIrregular;
 }
 
+// Función para verificar cuántas veces una carta se repite en un conjunto de cartas.
+int ContarRepeticiones(const list<Carta>& conjunto, const Carta& cartaSeleccionada) {
+    int repeticiones = 0;
+    for (const auto& carta : conjunto) {
+        if (SonIguales(carta, cartaSeleccionada)) {
+            repeticiones++;
+        }
+    }
+    return repeticiones;
+}
+
 // Función objetivo: Maximizar el desorden penalizando la repetición cercana de números.
 int EvaluarDesorden(const list<Carta>& solucionActual, const Carta& cartaSeleccionada) {
     int penalizacion = 0;
@@ -134,7 +147,7 @@ void SeleccionarCarta() {
 
     if (penalizacion == 0) {
         solucion.push_back(candidato);
-        ImprimirLista(solucion, "Solución Actual: ");
+        ImprimirLista(solucion, "Solución Actual: \n");
         mazo.pop_front();
     } else {
         candidato = mazo.back();
@@ -142,7 +155,7 @@ void SeleccionarCarta() {
         
         if (penalizacion == 0) {
             solucion.push_back(candidato);
-            ImprimirLista(solucion, "Solución Actual: ");
+            ImprimirLista(solucion, "Solución Actual: \n");
             mazo.pop_back();
         } else {
             mazo = MoverCartasIrregularmente(mazo);
@@ -166,7 +179,7 @@ int main(){
     while (solucion.size() < 52) 
     {
         SeleccionarCarta();
-        ImprimirLista(mazo, "Restantes: ");
+        ImprimirLista(mazo, "Restantes: \n");
     }
 
     return 0;
