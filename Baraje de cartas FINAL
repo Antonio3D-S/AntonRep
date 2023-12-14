@@ -13,7 +13,6 @@
  *  12/12/2023
  */
 
-
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -106,9 +105,6 @@ vector<Carta> DesordenarCartas(const vector<Carta>& cartasOrdenadas) {
             solucion.push_back(*it);
             cartasShuffle.erase(it);  // Eliminar la carta seleccionada de cartasShuffle
         }
-
-
-        cout << ".";
     }
 
 
@@ -126,9 +122,6 @@ void InicializarMazo(vector<Carta>& mazo) {
         mazo.push_back({3, i});
         mazo.push_back({4, i});
     }
-
-
-    ImprimirVector(mazo, "Mazo Inicial: ");
 }
 
 
