@@ -10,8 +10,9 @@
  *  1116252 - Radhames Ventura 
  *
  *  Fecha en la que se desarrollo el programa (dd/mm/aa):
- *  12/12/2023
+ *  14/12/2023
  */
+
 
 #include <iostream>
 #include <vector>
@@ -61,7 +62,7 @@ vector<Carta> Obtener(const vector<Carta>& vectorial, size_t n) {
     // Asegúrate de que n no sea mayor que el tamaño máximo del vector
     n = min(n, maxSize);
 
-
+    //Recorre desde el punto elegido hasta el final. En pocas palabras, 14 ha 20 por ejemplo.
     for (size_t i = maxSize - n; i < maxSize; ++i) {
         vect.push_back(vectorial[i]);
     }
@@ -70,17 +71,15 @@ vector<Carta> Obtener(const vector<Carta>& vectorial, size_t n) {
     return vect;
 }
 bool Evaluar(const vector<Carta>& solucionActual, const Carta& cartaSeleccionada) {
-    size_t numUltimasCartas = min(solucionActual.size(), static_cast<size_t>(k));
-    auto ultimasCartas = Obtener(solucionActual, numUltimasCartas);
-
-
-    return any_of(ultimasCartas.begin(), ultimasCartas.end(), [&](const Carta& carta) {
+    size_t numUltimasCartas = min(solucionActual.size(), static_cast<size_t>(k)); //Obtiene el valor menor posible si es el caso. Esto es util cuando en solucion hay menos de 6 cartas
+    vector<Carta> ultimasCartas = Obtener(solucionActual, numUltimasCartas);
+    return any_of(ultimasCartas.begin(), ultimasCartas.end(), [&](const Carta& carta) { //Se usa any_of para encontrar cualquer coincidencia dentro del rango de cartas. Retornando un True o False.
         return carta.NUM == cartaSeleccionada.NUM;
     });
 }
 vector<Carta> DesordenarCartas(const vector<Carta>& cartasOrdenadas) {
     vector<Carta> solucion;
-    solucion.reserve(cartasOrdenadas.size());
+    solucion.reserve(cartasOrdenadas.size()); //Se reserva espacio en la memoria igual al tamaño de las cartas. 
 
 
     vector<Carta> cartasShuffle = cartasOrdenadas;  // Crear una copia para hacer shuffle
@@ -96,12 +95,13 @@ vector<Carta> DesordenarCartas(const vector<Carta>& cartasOrdenadas) {
 
 
         // Seleccionar la primera carta válida y añadirla a solucion
-        auto it = find_if(cartasShuffle.begin(), cartasShuffle.end(), [&](const Carta& c) {
+        auto it = find_if(cartasShuffle.begin(), cartasShuffle.end(), [&](const Carta& c) { //El uso de auto es necesario para el find_if ya que la funcion devuelve un vector<Carta>::iterator.
             return !Evaluar(solucion, c);
         });
 
-
-        if (it != cartasShuffle.end()) {
+/*verifica si el iterador it no apunta al final del vector cartasShuffle.
+Si it no es igual a cartasShuffle.end(), significa que se encontró una carta que cumple con la condición establecida por el find_if.
+ */       if (it != cartasShuffle.end()) {
             solucion.push_back(*it);
             cartasShuffle.erase(it);  // Eliminar la carta seleccionada de cartasShuffle
         }
