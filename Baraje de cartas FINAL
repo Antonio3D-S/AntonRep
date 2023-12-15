@@ -1,3 +1,19 @@
+/*
+ *  +=============== Presentación ===============+
+ *
+ *  Enunciado del problema:
+ *  Realizar un programa C++ que simule un baraje de cartas usando el paradigma de programacion greedy o Voraz.
+ *  Autores (ID - Nombre):
+ *  1107555 - Angel Soriano
+ *  1114790 - Gabriel Antonio Alba Natera
+ *  1114290 - Angel Antonio Orona Pimentel
+ *  1116252 - Radhames Ventura 
+ *
+ *  Fecha en la que se desarrollo el programa (dd/mm/aa):
+ *  12/12/2023
+ */
+
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -13,7 +29,6 @@ struct Carta {
     int NUM;
 };
 
-
 const int k = 6;
 const int totalCartas = 52;
 const int totalPalo = 13;
@@ -22,12 +37,6 @@ const int totalPalo = 13;
 void ImprimirCarta(const Carta& c, int ancho) {
     const char* nombresPalo[] = {"Espadas", "Tréboles", "Diamantes", "Corazones"};
     const char* numStr = (c.NUM == 1) ? "A" : (c.NUM == 11) ? "J" : (c.NUM == 12) ? "Q" : (c.NUM == 13) ? "K" : to_string(c.NUM).c_str();
-
-
-/*
-
-*/
-
 
     // Imprimir con delimitadores alineados
     cout << " | " << setw(ancho/2) << left << numStr << " de " << setw(ancho) << left << nombresPalo[c.TIPO - 1] << " | ";
@@ -52,7 +61,7 @@ vector<Carta> Obtener(const vector<Carta>& vectorial, size_t n) {
     // Asegúrate de que n no sea mayor que el tamaño máximo del vector
     n = min(n, maxSize);
 
-    //Recorre desde el punto elegido hasta el final. En pocas palabras, 14 ha 20 por ejemplo.
+    //Recorre desde el punto elegido hasta el final. En pocas palabras, de 14 a 20 por ejemplo.
     for (size_t i = maxSize - n; i < maxSize; ++i) {
         vect.push_back(vectorial[i]);
     }
@@ -70,6 +79,8 @@ bool Evaluar(const vector<Carta>& solucionActual, const Carta& cartaSeleccionada
     
 
      //Se usa any_of para encontrar cualquer coincidencia dentro del rango de cartas. Retornando un True o False.
+     // Esta función se utiliza para determinar si algún elemento de un rango satisface cierta condición.
+     //La condicion es un valor donde el campo NUM sea igual a la carta seleccionada.
     return any_of(ultimasCartas.begin(), ultimasCartas.end(), [&](const Carta& carta) {
           return carta.NUM == cartaSeleccionada.NUM;
     });
@@ -98,9 +109,10 @@ vector<Carta> DesordenarCartas(const vector<Carta>& cartasOrdenadas) {
             return !Evaluar(solucion, c);
         });
 
-/*verifica si el iterador it no apunta al final del vector cartasShuffle.
-Si it no es igual a cartasShuffle.end(), significa que se encontró una carta que cumple con la condición establecida por el find_if.
- */       if (it != cartasShuffle.end()) {
+        /*verifica si el iterador it no apunta al final del vector cartasShuffle.
+        Si it no es igual a cartasShuffle.end(), significa que se encontró una carta que cumple con la condición establecida por el find_if.
+ */
+       if (it != cartasShuffle.end()) {
             solucion.push_back(*it);
             cartasShuffle.erase(it);  // Eliminar la carta seleccionada de cartasShuffle
         }
