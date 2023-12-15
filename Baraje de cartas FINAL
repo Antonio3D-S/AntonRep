@@ -1,19 +1,3 @@
-/*
- *  +=============== Presentación ===============+
- *
- *  Enunciado del problema:
- *  Realizar un programa C++ que simule un baraje de cartas usando el paradigma de programacion greedy o Voraz.
- *  Autores (ID - Nombre):
- *  1107555 - Angel Soriano
- *  1114790 - Gabriel Antonio Alba Natera
- *  1114290 - Angel Antonio Orona Pimentel
- *  1116252 - Radhames Ventura 
- *
- *  Fecha en la que se desarrollo el programa (dd/mm/aa):
- *  14/12/2023
- */
-
-
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -39,8 +23,14 @@ void ImprimirCarta(const Carta& c, int ancho) {
     const char* nombresPalo[] = {"Espadas", "Tréboles", "Diamantes", "Corazones"};
     const char* numStr = (c.NUM == 1) ? "A" : (c.NUM == 11) ? "J" : (c.NUM == 12) ? "Q" : (c.NUM == 13) ? "K" : to_string(c.NUM).c_str();
 
+
+/*
+
+*/
+
+
     // Imprimir con delimitadores alineados
-    cout << " | " << setw(ancho) << left << numStr << " de " << setw(ancho) << left << nombresPalo[c.TIPO - 1] << " | ";
+    cout << " | " << setw(ancho/2) << left << numStr << " de " << setw(ancho) << left << nombresPalo[c.TIPO - 1] << " | ";
 }
 // Función para imprimir un vector de cartas.
 void ImprimirVector(const vector<Carta>& vector, string mensaje) {
@@ -70,11 +60,18 @@ vector<Carta> Obtener(const vector<Carta>& vectorial, size_t n) {
 
     return vect;
 }
+
+//METODO PARA ASEGURAR LA DIFERENCIA DE 6 PASOS.
 bool Evaluar(const vector<Carta>& solucionActual, const Carta& cartaSeleccionada) {
-    size_t numUltimasCartas = min(solucionActual.size(), static_cast<size_t>(k)); //Obtiene el valor menor posible si es el caso. Esto es util cuando en solucion hay menos de 6 cartas
+
+    //Obtiene el valor menor posible si es el caso. Esto es util cuando en solucion hay menos de 6 cartas
+    size_t numUltimasCartas = min(solucionActual.size(), static_cast<size_t>(k)); 
     vector<Carta> ultimasCartas = Obtener(solucionActual, numUltimasCartas);
-    return any_of(ultimasCartas.begin(), ultimasCartas.end(), [&](const Carta& carta) { //Se usa any_of para encontrar cualquer coincidencia dentro del rango de cartas. Retornando un True o False.
-        return carta.NUM == cartaSeleccionada.NUM;
+    
+
+     //Se usa any_of para encontrar cualquer coincidencia dentro del rango de cartas. Retornando un True o False.
+    return any_of(ultimasCartas.begin(), ultimasCartas.end(), [&](const Carta& carta) {
+          return carta.NUM == cartaSeleccionada.NUM;
     });
 }
 vector<Carta> DesordenarCartas(const vector<Carta>& cartasOrdenadas) {
@@ -89,12 +86,14 @@ vector<Carta> DesordenarCartas(const vector<Carta>& cartasOrdenadas) {
     mt19937 gen(rd());
 
 
-    for (const auto& carta : cartasOrdenadas) {
+    for (const auto& carta : cartasOrdenadas) { //Usar cartasOrdenadas porque los demas vectores varian de tamaño
         // Barajar las cartas
         shuffle(cartasShuffle.begin(), cartasShuffle.end(), gen);
 
 
         // Seleccionar la primera carta válida y añadirla a solucion
+        //FIND_IF encuentra el primer elemento del shuffle que cumple con la condicion. usa const Carta& c como elemento guia. Pasa como parametro [&].
+        //Usa la estructura de datos auto. que obtiene un iterador vector carta.
         auto it = find_if(cartasShuffle.begin(), cartasShuffle.end(), [&](const Carta& c) { //El uso de auto es necesario para el find_if ya que la funcion devuelve un vector<Carta>::iterator.
             return !Evaluar(solucion, c);
         });
