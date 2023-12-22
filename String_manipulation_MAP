@@ -26,7 +26,7 @@ struct FrecuenciaCaracteres {
     int totalCaracteres = 0;
 
     // Función para normalizar caracteres (convertir a minúsculas y quitar acentos)
-    wchar_t normalizarCaracter(wchar_t c) const {
+    wchar_t normalizarCaracter(wchar_t c) {
         c = towlower(c);
 
         // Quitar acentos
@@ -40,8 +40,6 @@ struct FrecuenciaCaracteres {
             return L'o';
         } else if (c == L'ú' || c == L'ù' || c == L'û' || c == L'ü') {
             return L'u';
-        } else if (c == L'ñ') {
-            return L'n';
         } else {
             return c;
         }
