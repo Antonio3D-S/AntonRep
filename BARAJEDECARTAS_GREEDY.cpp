@@ -10,166 +10,177 @@
  *  1116252 - Radhames Ventura 
  *
  *  Fecha en la que se desarrollo el programa (dd/mm/aa):
- *  12/12/2023
+ *  14/12/2023
  */
 
 
-
 #include <iostream>
-#include <list> 
-#include <string>
+#include <vector>
+#include <algorithm>
+#include <random>
+#include <iomanip>  // Necesario para setw
+
 
 using namespace std;
 
-// Definición de la estructura Carta que tiene un número (NUM) y un palo (TIPO).
+
 struct Carta {
     int TIPO;
     int NUM;
 };
 
-// Lista que contiene todas las cartas del mazo y la solución actual.
-list<Carta> mazo, solucion;
+const int k = 6;
+const int totalCartas = 52;
+const int totalPalo = 13;
 
-// Función para imprimir una carta.
-void ImprimirCarta(const Carta& c) {
-    const char* nombresPalo[] = {"Espadas", "Tréboles", "Diamantes", "Corazones"};
+// Función para imprimir una carta con delimitadores alineados.
+void ImprimirCarta(const Carta& c, int ancho) {
+    const char* nombresPalo[] = {"Espadas", "Treboles", "Diamantes", "Corazones"};
     const char* numStr = (c.NUM == 1) ? "A" : (c.NUM == 11) ? "J" : (c.NUM == 12) ? "Q" : (c.NUM == 13) ? "K" : to_string(c.NUM).c_str();
 
-    std::cout << " | " << numStr << " de " << nombresPalo[c.TIPO - 1] << " | ";
+    // Imprimir con delimitadores alineados
+    cout << " | " << setw(ancho/2) << left << numStr << " de " << setw(ancho) << left << nombresPalo[c.TIPO - 1] << " | ";
 }
-
-
-// Función para imprimir una lista de cartas.
-void ImprimirLista(const list<Carta>& lista, string mensaje) {
-    cout << mensaje;
-    for (const auto& carta : lista) {
-        ImprimirCarta(carta);
+// Función para imprimir un vector de cartas.
+void ImprimirVector(const vector<Carta>& vector, string mensaje) {
+    cout << mensaje << endl;
+    for (const auto& carta : vector) {
+        ImprimirCarta(carta,10);
         cout << endl;
     }
     cout << endl << endl;
-
 }
 
-// Función para verificar si dos cartas son iguales.
-bool SonIguales(const Carta& carta1, const Carta& carta2) {
-    return carta1.NUM == carta2.NUM;
+
+vector<Carta> Obtener(const vector<Carta>& vectorial, size_t n) {
+    vector<Carta> vect;
+    // Obtén el tamaño máximo del vector
+    size_t maxSize = vectorial.size();
+
+
+    // Asegúrate de que n no sea mayor que el tamaño máximo del vector
+    n = min(n, maxSize);
+
+    //Recorre desde el punto elegido hasta el final. En pocas palabras, de 14 a 20 por ejemplo.
+    for (size_t i = maxSize - n; i < maxSize; ++i) {
+        vect.push_back(vectorial[i]);
+    }
+
+
+    return vect;
 }
 
-// Función para inicializar la lista de cartas con todas las cartas del mazo.
-void InicializarMazo() {
-    for (int i = 1; i <= 13; i++) {
+//METODO PARA ASEGURAR LA DIFERENCIA DE 6 PASOS.
+bool Evaluar(const vector<Carta>& solucionActual, const Carta& cartaSeleccionada) {
+
+    //Obtiene el valor menor posible si es el caso. Esto es util cuando en solucion hay menos de 6 cartas
+    vector<Carta> ultimasCartas = Obtener(solucionActual, k);
+    
+
+     //Se usa any_of para encontrar cualquer coincidencia dentro del rango de cartas. Retornando un True o False.
+     // Esta función se utiliza para determinar si algún elemento de un rango satisface cierta condición.
+     //La condicion es un valor donde el campo NUM sea igual a la carta seleccionada.
+    return any_of(ultimasCartas.begin(), ultimasCartas.end(), [&](const Carta& carta) {
+          return carta.NUM == cartaSeleccionada.NUM;
+    });
+}
+vector<Carta> DesordenarCartas(const vector<Carta>& cartasOrdenadas) {
+    vector<Carta> solucion;
+    solucion.reserve(cartasOrdenadas.size()); //Se reserva espacio en la memoria igual al tamaño de las cartas. 
+
+
+    vector<Carta> cartasShuffle = cartasOrdenadas;  // Crear una copia para hacer shuffle
+
+
+    random_device rd;
+    mt19937 gen(rd());
+
+
+    for (const auto& carta : cartasOrdenadas) { //Usar cartasOrdenadas porque los demas vectores varian de tamaño
+        // Barajar las cartas
+        shuffle(cartasShuffle.begin(), cartasShuffle.end(), gen);
+
+
+        // Seleccionar la primera carta válida y añadirla a solucion
+        //FIND_IF encuentra el primer elemento del shuffle que cumple con la condicion. usa const Carta& c como elemento guia. Pasa por referencia [&].
+        //Usa la estructura de datos auto. que obtiene un iterador vector carta.
+        auto it = find_if(cartasShuffle.begin(), cartasShuffle.end(), [&](const Carta& c) 
+        { //El uso de auto es necesario para el find_if ya que la funcion devuelve un vector<Carta>::iterator.
+            return !Evaluar(solucion, c);
+        });
+
+        /*verifica si el iterador it no apunta al final del vector cartasShuffle.
+        Si it no es igual a cartasShuffle.end(), significa que se encontró una carta que cumple con la condición establecida por el find_if.
+        si auto it retorna el final de cartasshuffle( cartasshuffle.end()), significa que returno un elemento inexistente. 
+ */
+       if (it != cartasShuffle.end()) {
+            solucion.push_back(*it);
+            cartasShuffle.erase(it);  // Eliminar la carta seleccionada de cartasShuffle
+        }
+    }
+
+
+    return solucion;
+}
+
+
+
+
+//// Función para inicializar el vector de cartas con todas las cartas del mazo.
+void InicializarMazo(vector<Carta>& mazo) {
+    for (int i = 1; i <= totalPalo; i++) {
         mazo.push_back({1, i});
         mazo.push_back({2, i});
         mazo.push_back({3, i});
         mazo.push_back({4, i});
     }
-
-    ImprimirLista(mazo, "Mazo Inicial: ");
 }
 
-// Función para obtener los últimos n elementos de una lista.
-list<Carta> ObtenerUltimasCartas(const list<Carta>& lista, int n) {
-    if (n <= 0) {
-        return {};
-    }
 
-    list<Carta> subconjunto;
-    int tamañoLista = lista.size();
-    int elementosAObtener = min(n, tamañoLista);
+// Función para reiniciar el juego.
+void IniciarJuego() {
+    vector<Carta> cartasOrdenadas;
 
-    auto it = lista.rbegin();
-    for (int i = 0; i < elementosAObtener && it != lista.rend(); ++i, ++it) {
-        subconjunto.push_back(*it);
-    }
 
-    return subconjunto;
+    // Inicializar cartasOrdenadas con todas las cartas del mazo
+    InicializarMazo(cartasOrdenadas);
+
+
+    char opcion;
+    do {
+        // Desordenar cartas y mostrar resultados
+        vector<Carta> cartasDesordenadas = DesordenarCartas(cartasOrdenadas);
+
+
+        // Imprimir cartas ordenadas
+        ImprimirVector(cartasOrdenadas, "Cartas Ordenadas:");
+
+
+        // Imprimir cartas desordenadas
+        ImprimirVector(cartasDesordenadas, "Cartas Desordenadas:");
+
+
+        // Preguntar al jugador si desea seguir barajando
+        cout << "¿Quieres seguir barajando? (Y para continuar, otro caracter para terminar el juego): ";
+        cin >> opcion;
+
+
+        // Limpiar la pantalla antes de la siguiente jugada
+        system("cls || clear");
+
+
+    } while (toupper(opcion) == 'Y');
 }
 
-// Función para realizar un movimiento irregular en la lista de cartas.
-list<Carta> MoverCartasIrregularmente(const list<Carta>& lista) {
-    int tamañoLista = lista.size();
-    int mitad = tamañoLista / 2;
 
-    auto itInicio = lista.begin();
-    auto itMitad = lista.begin();
-    advance(itMitad, mitad);
+int main() {
+   
+    IniciarJuego();
 
-    list<Carta> listaIrregular;
-
-    auto itPrimeraMitad = itInicio;
-    auto itSegundaMitad = itMitad;
-
-    while (itPrimeraMitad != itMitad || itSegundaMitad != lista.end()) {
-        // Mover algunas cartas al final y otras al principio para distribuir irregularmente
-        if (itSegundaMitad != lista.end()) {
-            listaIrregular.push_back(*itSegundaMitad);
-            ++itSegundaMitad;
-        }
-
-        if (itPrimeraMitad != itMitad) {
-            listaIrregular.push_back(*itPrimeraMitad);
-            ++itPrimeraMitad;
-        }
-    }
-
-    return listaIrregular;
-}
-
-// Función objetivo: Maximizar el desorden penalizando la repetición cercana de números.
-int EvaluarDesorden(const list<Carta>& solucionActual, const Carta& cartaSeleccionada) {
-    int penalizacion = 0;
-    list<Carta> UltimasCartas = ObtenerUltimasCartas(solucionActual, 6);
-
-    for (const auto& carta : UltimasCartas) {
-        if (SonIguales(carta, cartaSeleccionada)) {
-            penalizacion++;
-        }
-    }
-
-    return penalizacion;
-}
-
-// Función para seleccionar y agregar una carta a la solución.
-void SeleccionarCarta() {
-    Carta candidato = mazo.front();
-    int penalizacion = EvaluarDesorden(solucion, candidato);
-
-    if (penalizacion == 0) {
-        solucion.push_back(candidato);
-        ImprimirLista(solucion, "Solución Actual: \n");
-        mazo.pop_front();
-    } else {
-        candidato = mazo.back();
-        penalizacion = EvaluarDesorden(solucion, candidato);
-        
-        if (penalizacion == 0) {
-            solucion.push_back(candidato);
-            ImprimirLista(solucion, "Solución Actual: \n");
-            mazo.pop_back();
-        } else {
-            mazo = MoverCartasIrregularmente(mazo);
-            SeleccionarCarta();
-
-        }
-    }
-    
-    
-}
-
-// Función principal que inicializa las cartas y realiza la selección hasta tener 52 en la solución.
-int main(){
-
-    InicializarMazo();
-        
-    for (size_t i = 0; i < 3; i++)
-    {
-        mazo = MoverCartasIrregularmente(mazo);
-    }
-    while (solucion.size() < 52) 
-    {
-        SeleccionarCarta();
-        ImprimirLista(mazo, "Restantes: \n");
-    }
 
     return 0;
 }
+
+
+
+
