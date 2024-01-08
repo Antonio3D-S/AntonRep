@@ -1,0 +1,99 @@
+
+/*
+ *  +=============== Presentación ===============+
+ *
+ *  Enunciado del problema:
+ *  Realizar un programa en C++ que realice una tabla de amortiguacion con salida formateada. 
+ *  Autores (ID - Nombre):
+ *  1107555 - Angel Soriano
+ *  1114790 - Gabriel Antonio Alba Natera
+ *  1114290 - Angel Antonio Orona Pimentel
+ *  1116252 - Radhames Ventura 
+ *
+ *  Fecha en la que se desarrollo el programa (dd/mm/aa):
+ *  08/01/2024
+ */
+
+
+#include <iostream>
+#include <iomanip>
+#include <cmath>
+#include <string>
+
+using namespace std;
+
+#define RESET   "\033[0m"
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define YELLOW  "\033[33m"
+#define BLUE    "\033[34m"
+
+double calcularPMT(double monto, double tasa, int tiempo) {
+    double r = tasa / 100 / 12.0;
+    double pmt = monto * r / (1 - pow(1 + r, -12 * tiempo));
+    return round(pmt * 100) / 100; 
+}
+
+double calcularIPMT(double saldoAnterior, double tasa) {
+    double r = tasa / 100 / 12.0;
+    return round(saldoAnterior * r * 100) / 100;  
+}
+
+#include <sstream>  // Necesario para std::ostringstream
+
+void imprimirTabla(double monto, double tasa, int tiempo) {
+    double saldo = monto;
+    double totalInteres = 0.0;
+
+    int anchoCampo = 20;  // Ancho fijo para los campos numéricos
+
+    cout << setw(10) << YELLOW << "Mes"
+         << setw(anchoCampo/2) << YELLOW << "Capital (RD$)"
+         << setw(anchoCampo/2 + 5) << YELLOW << "Interes (RD$)"
+         << setw(anchoCampo/1.5 + 2) << YELLOW << "Saldo (RD$)" << RESET << endl;
+
+    cout << fixed << setprecision(2);  // Establecer el formato de salida a dos decimales
+
+    for (int mes = 1; mes <= tiempo * 12; ++mes) {
+        double pmt = calcularPMT(monto, tasa, tiempo);
+        double interes = calcularIPMT(saldo, tasa);
+        double capital = pmt - interes;
+        saldo -= capital;
+
+        totalInteres += interes;
+
+        // Crear un stringstream para formatear la salida sin ceros adicionales
+        ostringstream ssCapital, ssInteres, ssSaldo;
+        ssCapital << "RD$" << capital;
+        ssInteres << "RD$" << interes;
+        ssSaldo << "RD$" << saldo;
+
+        cout << setw(10) << right << mes
+             << " | " << GREEN << setw(anchoCampo) << left << ssCapital.str()
+             << " | " << RED << setw(anchoCampo) << left << ssInteres.str()
+             << " | " << BLUE << setw(anchoCampo) << left << ssSaldo.str() << RESET << endl;
+    }
+
+    cout << "\nTotal Interes Pagado: " << "RD$" << totalInteres << RESET << endl;
+}
+
+int main() {
+    double monto, tasa;
+    int tiempo;
+
+    setlocale(LC_ALL, "es_ES.utf8"); // Permite letras del español.
+
+    cout << "Ingrese el monto del préstamo: ";
+    cin >> monto;
+
+    cout << "Ingrese la tasa de interés anual (%): ";
+    cin >> tasa;
+
+    cout << "Ingrese el plazo del préstamo en años: ";
+    cin >> tiempo;
+
+    cout << "\nTabla de Amortización:\n";
+    imprimirTabla(monto, tasa, tiempo);
+
+    return 0;
+}
