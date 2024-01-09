@@ -84,7 +84,7 @@ void imprimirTabla(double monto, double tasa, int tiempo) {
 }
 
 int main() {
-    double monto, tasa;
+    double monto, tasa, pagoInicial;
     float tiempo;
 
     setlocale(LC_ALL, "es_ES.utf8"); // Permite letras del español.
@@ -98,6 +98,34 @@ int main() {
     cout << "Ingrese el plazo del préstamo en años: ";
     cin >> tiempo;
 
+    // Bucle para asegurarse de que se ingrese una opción válida
+    char incluirPagoInicial;
+    bool opcionValida = false;
+    while (!opcionValida) {
+        cout << "¿Desea incluir un pago inicial? (S/N): ";
+        cin >> incluirPagoInicial;
+
+        if (toupper(incluirPagoInicial) == 'S' || toupper(incluirPagoInicial) == 'N') {
+            opcionValida = true;
+        } else {
+            cout << "Opción no válida. Por favor, ingrese 'S' para sí o 'N' para no.\n";
+        }
+    }
+
+    // Variables para el pago inicial
+    double montoPagoInicial = 0.0;
+    double saldoDespuesPagoInicial = monto;
+
+    // Calcular el monto del pago inicial si el usuario eligió incluirlo
+    if (toupper(incluirPagoInicial) == 'S') {
+        cout << "Ingrese el porcentaje del pago inicial (% del préstamo): ";
+        cin >> pagoInicial;
+        montoPagoInicial = monto * (pagoInicial / 100.0);
+        monto = monto - montoPagoInicial; 
+
+        // Mostrar el monto del pago inicial
+        cout << "El monto del pago inicial es: " << "RD$" << montoPagoInicial << endl;
+    }
     cout << "\nTabla de Amortización:\n";
     imprimirTabla(monto, tasa, tiempo);
 
