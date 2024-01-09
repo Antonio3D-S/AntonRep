@@ -19,6 +19,7 @@
 #include <iomanip>
 #include <cmath>
 #include <string>
+#include <sstream>  // Necesario para std::ostringstream
 
 using namespace std;
 
@@ -31,21 +32,24 @@ using namespace std;
 double calcularPMT(double monto, double tasa, int tiempo) {
     double r = tasa / 100 / 12.0;
     double pmt = monto * r / (1 - pow(1 + r, -12 * tiempo));
-    return round(pmt * 100) / 100; 
+    return pmt;
+
 }
 
 double calcularIPMT(double saldoAnterior, double tasa) {
     double r = tasa / 100 / 12.0;
-    return round(saldoAnterior * r * 100) / 100;  
+    return saldoAnterior * r; // Eliminar redondeo en el cálculo
 }
-
-#include <sstream>  // Necesario para std::ostringstream
 
 void imprimirTabla(double monto, double tasa, int tiempo) {
     double saldo = monto;
     double totalInteres = 0.0;
 
     int anchoCampo = 20;  // Ancho fijo para los campos numéricos
+
+ double cuotaMensual = calcularPMT(monto, tasa, tiempo);
+    cout << YELLOW << "Cuota Mensual (RD$): " << fixed << setprecision(2) << cuotaMensual << RESET << "\n\n";
+
 
     cout << setw(10) << YELLOW << "Mes"
          << setw(anchoCampo/2) << YELLOW << "Capital (RD$)"
@@ -64,9 +68,9 @@ void imprimirTabla(double monto, double tasa, int tiempo) {
 
         // Crear un stringstream para formatear la salida sin ceros adicionales
         ostringstream ssCapital, ssInteres, ssSaldo;
-        ssCapital << "RD$" << capital;
-        ssInteres << "RD$" << interes;
-        ssSaldo << "RD$" << saldo;
+    ssCapital << "RD$" << fixed << setprecision(2) << capital;
+    ssInteres << "RD$" << fixed << setprecision(2) << interes;
+    ssSaldo << "RD$" << fixed << setprecision(2) << saldo;
 
         cout << setw(10) << right << mes
              << " | " << GREEN << setw(anchoCampo) << left << ssCapital.str()
@@ -79,7 +83,7 @@ void imprimirTabla(double monto, double tasa, int tiempo) {
 
 int main() {
     double monto, tasa;
-    int tiempo;
+    float tiempo;
 
     setlocale(LC_ALL, "es_ES.utf8"); // Permite letras del español.
 
