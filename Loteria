@@ -1,0 +1,186 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+#pragma region Prototipos
+
+void dibujarTablero(int*);
+int verificarVictoria(const int*);
+int minimax(int*, int);
+int movimientoBot(int*);
+bool validarEntrada(string, int[]);
+
+#pragma endregion
+
+#pragma region Colores
+
+#define RED     "\033[31m"
+#define BLUE    "\033[34m"
+#define RESET   "\033[0m"
+
+#pragma endregion
+
+int main()
+{
+    int tablero[9] = { 0 }; // Tablero Vacío 
+    int turnos = 0, k;
+    dibujarTablero(tablero); // Muestro Tablero
+
+    // Recordar: "Humano = -1" y "Bot = 1".
+    while (turnos < 9)
+    {
+        string movHumanoS;
+
+        cout << "\nIngrese la posicion de su marca (0-8): ";
+        cin >> movHumanoS;
+
+        if (validarEntrada(movHumanoS, tablero)) 
+        {
+            int movHumano = stoi(movHumanoS);
+
+            if (tablero[movHumano] == 0) // Verifica que la posicion está vacía.
+            {
+                tablero[movHumano] = -1;
+                turnos++;
+
+                if (verificarVictoria(tablero) == 0) // Si no se ha encontrado un ganador.
+                {
+                    k = movimientoBot(tablero);
+                    tablero[k] = 1;
+                    dibujarTablero(tablero); // Se muestra tablero con ambas jugadas.
+                    turnos++;
+
+                    if (verificarVictoria(tablero) != 0) { break; } // Hay Ganador
+                }
+                else { break; }
+            }
+            else { cout << "Posicion Invalida."; }
+        }
+        else
+        {
+            cout << "Entrada Invalida.";
+        }
+    }
+
+    switch (verificarVictoria(tablero))
+    {
+    case 0: cout << "Empate."; break;
+    case 1: cout << "Perdiste."; break;
+    case -1: cout << "Ganaste"; break;
+    }
+    return 0;
+}
+
+int verificarVictoria(const int* tablero)
+{
+    // Combinaciones Ganadoras. 
+    int ganador[8][3] = { {0,1,2},{3,4,5},{6,7,8},{0,3,6},{1,4,7},{2,5,8},{0,4,8},{2,4,6} };
+
+    for (int i = 0; i < 8; ++i) // Se verifica si hay ganador.
+    {
+        if (tablero[ganador[i][0]] != 0 && tablero[ganador[i][0]] == tablero[ganador[i][1]] && tablero[ganador[i][1]] == tablero[ganador[i][2]])
+        {
+            return tablero[ganador[i][2]]; // Se devuelve el valor de ganador. (-1 Humano, 1 IA)
+        }
+    }
+
+    return 0; // No se ha encontrado ganador.
+}
+
+int movimientoBot(int* tablero)
+{
+    int movimiento = -1, puntuacion = -2;
+
+    for (int i = 0; i < 9; i++)
+    {
+        if (tablero[i] == 0) // Encuentro posición vacía.
+        {
+            tablero[i] = 1; // Coloco el movimiento de la IA.
+            int puntuacionTemp = -minimax(tablero, -1); // Comienzo a buscar la solucion.
+            tablero[i] = 0; // Limpio el Tablero.   
+
+            if (puntuacionTemp > puntuacion)
+            {
+                puntuacion = puntuacionTemp;
+                movimiento = i;
+            }
+        }
+    }
+
+    //Devuelve el valor de la jugada optima encontrada en el arbol de jugadas.
+    return movimiento;
+}
+
+int minimax(int* tablero, int jugador)
+{
+    int ganador = verificarVictoria(tablero);
+    if (ganador != 0) return ganador * jugador; // Se ha encontrado una solución (Caso Base)
+
+    int movimiento = -1, bestPuntuacion = -2;
+
+    for (int i = 0; i < 9; i++) // Si no se ha encontrado una solución, se simula la jugada del siguiente jugador.
+    {
+        if (tablero[i] == 0) // Encontró una posición vacía.
+        {
+            tablero[i] = jugador; // Coloca la jugada (Humano o IA "Simulación")
+            int puntuacion = -minimax(tablero, jugador * -1); // Sigo buscando soluciones.
+
+            if (puntuacion > bestPuntuacion) // Se sustituye el valor de la simulación anterior, en caso de que la actual sea mejor.
+            {
+                bestPuntuacion = puntuacion;
+                movimiento = i;
+            }
+
+            tablero[i] = 0; // Limpio el Tablero.                 
+        }
+    }
+
+    if (movimiento == -1) return 0;
+
+    return bestPuntuacion;
+}
+
+bool validarEntrada(string entrada, int tablero[])
+{
+    if (!isdigit(entrada[0]) || entrada.length() > 1)
+    {
+        return false;
+    }
+
+    int entradaInt = stoi(entrada);
+
+    if (entradaInt < 0 || entradaInt > 8)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+void dibujarTablero(int* tablero)
+{
+    cout << "\n";
+    cout << "               Tablero " << endl;
+    cout << "            -------------" << endl;
+
+    for (int i = 0; i < 9; i++)
+    {
+        if ((i) % 3 == 0) { cout << "            "; }
+
+        if (tablero[i] == 0) { cout << "| " << i << " "; }
+        else if (tablero[i] == -1) { cout << "| " << RED << "X " << RESET; }
+        else { cout << "| " << BLUE << "O " << RESET; }
+
+        // Agrega una barra vertical al final de cada fila
+        if ((i + 1) % 3 == 0) { cout << "|"; }
+
+        // Agregar saltos de línea para filas
+        if ((i + 1) % 3 == 0 && i < 8)
+        {
+            cout << endl;
+            cout << "            -------------" << endl;
+        }
+    }
+    cout << "\n            -------------" << endl; // Linea final.
+}
