@@ -38,7 +38,7 @@ double calcularPMT(double monto, double tasa, int tiempo) {
 
 double calcularIPMT(double saldoAnterior, double tasa) {
     double r = tasa / 100 / 12.0;
-    return saldoAnterior * r; // Eliminar redondeo en el cálculo
+    return saldoAnterior * r; 
 }
 
 void imprimirTabla(double monto, double tasa, int tiempo) {
