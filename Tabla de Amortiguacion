@@ -1,19 +1,17 @@
-
 /*
  *  +=============== Presentación ===============+
  *
  *  Enunciado del problema:
- *  Realizar un programa en C++ que realice una tabla de amortiguacion con salida formateada. 
+ *  Realizar un programa en C++ que realice una tabla de amortiguación con salida formateada. 
  *  Autores (ID - Nombre):
  *  1107555 - Angel Soriano
  *  1114790 - Gabriel Antonio Alba Natera
  *  1114290 - Angel Antonio Orona Pimentel
  *  1116252 - Radhames Ventura 
  *
- *  Fecha en la que se desarrollo el programa (dd/mm/aa):
+ *  Fecha en la que se desarrolló el programa (dd/mm/aa):
  *  08/01/2024
  */
-
 
 #include <iostream>
 #include <iomanip>
@@ -29,32 +27,34 @@ using namespace std;
 #define YELLOW  "\033[33m"
 #define BLUE    "\033[34m"
 
+// Función que calcula la cuota mensual de un préstamo
 double calcularPMT(double monto, double tasa, int tiempo) {
     double r = tasa / 100 / 12.0;
     double pmt = monto * r / (1 - pow(1 + r, -12 * tiempo));
     return pmt;
-
 }
 
+// Función que calcula el interés de un periodo
 double calcularIPMT(double saldoAnterior, double tasa) {
     double r = tasa / 100 / 12.0;
     return saldoAnterior * r; 
 }
 
+// Función que imprime la tabla de amortización
 void imprimirTabla(double monto, double tasa, int tiempo) {
     double saldo = monto;
     double totalInteres = 0.0;
 
     int anchoCampo = 20;  // Ancho fijo para los campos numéricos
 
- double cuotaMensual = calcularPMT(monto, tasa, tiempo);
+    double cuotaMensual = calcularPMT(monto, tasa, tiempo);
     cout << YELLOW << "Cuota Mensual (RD$): " << fixed << setprecision(2) << cuotaMensual << RESET << "\n\n";
 
-
+    // Encabezado de la tabla
     cout << setw(10) << YELLOW << "Mes"
-         << setw(anchoCampo/2) << YELLOW << "Capital (RD$)"
-         << setw(anchoCampo/2 + 5) << YELLOW << "Interes (RD$)"
-         << setw(anchoCampo/1.5 + 2) << YELLOW << "Saldo (RD$)" << RESET << endl;
+         << setw(anchoCampo / 2) << YELLOW << "Capital (RD$)"
+         << setw(anchoCampo / 2 + 5) << YELLOW << "Interes (RD$)"
+         << setw(anchoCampo / 1.5 + 2) << YELLOW << "Saldo (RD$)" << RESET << endl;
 
     cout << fixed << setprecision(2);  // Establecer el formato de salida a dos decimales
 
@@ -68,16 +68,18 @@ void imprimirTabla(double monto, double tasa, int tiempo) {
 
         // Crear un stringstream para formatear la salida sin ceros adicionales
         ostringstream ssCapital, ssInteres, ssSaldo;
-    ssCapital << "RD$" << fixed << setprecision(2) << capital;
-    ssInteres << "RD$" << fixed << setprecision(2) << interes;
-    ssSaldo << "RD$" << fixed << setprecision(2) << saldo;
+        ssCapital << "RD$" << fixed << setprecision(2) << capital;
+        ssInteres << "RD$" << fixed << setprecision(2) << interes;
+        ssSaldo << "RD$" << fixed << setprecision(2) << saldo;
 
+        // Imprimir una fila de la tabla
         cout << setw(10) << right << mes
              << " | " << GREEN << setw(anchoCampo) << left << ssCapital.str()
              << " | " << RED << setw(anchoCampo) << left << ssInteres.str()
              << " | " << BLUE << setw(anchoCampo) << left << ssSaldo.str() << RESET << endl;
     }
 
+    // Imprimir el total de intereses pagados
     cout << "\nTotal Interes Pagado: " << "RD$" << totalInteres << RESET << endl;
 }
 
