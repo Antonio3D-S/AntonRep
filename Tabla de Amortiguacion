@@ -114,7 +114,6 @@ int main() {
 
     // Variables para el pago inicial
     double montoPagoInicial = 0.0;
-    double saldoDespuesPagoInicial = monto;
 
     // Calcular el monto del pago inicial si el usuario eligió incluirlo
     if (toupper(incluirPagoInicial) == 'S') {
