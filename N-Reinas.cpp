@@ -11,7 +11,7 @@
  *  1116252 - Radhames Ventura 
  *
  *  Fecha en la que se desarrollo el programa (dd/mm/aa):
- *  08/01/2024
+ *  09/01/2024
  */
 
 #include <iostream>
