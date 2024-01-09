@@ -47,6 +47,13 @@ void ImprimirTablero(vector<vector<char>> tablero, int nReinas)
     }
     cout << endl;
 
+            cout << " +";
+        for (int i = 0; i < nReinas - 1; i++)
+        {
+            cout << "---+";
+        }
+        cout << "---+" << endl;
+
     // Imprimir el tablero
     for (int fila = 0; fila < nReinas; fila++)
     {
@@ -55,7 +62,6 @@ void ImprimirTablero(vector<vector<char>> tablero, int nReinas)
         
         for (int columna = 0; columna < nReinas; columna++)
         {
-            // Mejorar la presentación de las reinas en el tablero
             if (tablero[columna][fila] == 'Q')
                 cout << " Q |";
             else
@@ -64,7 +70,7 @@ void ImprimirTablero(vector<vector<char>> tablero, int nReinas)
         cout << endl;
 
         // Imprimir la línea divisoria entre filas
-        cout << "  +";
+        cout << " +";
         for (int i = 0; i < nReinas - 1; i++)
         {
             cout << "---+";
@@ -110,7 +116,8 @@ void jugadasReinas(int TablaReinas[], int nReinas, int profundidad)
         ImprimirTablero(tablero, nReinas);
         cout << endl;
     }
-    else // Quedan Reinas por Colocar.
+    else
+     // Quedan Reinas por Colocar.
     {
         for (TablaReinas[profundidad] = 0; TablaReinas[profundidad] < nReinas; TablaReinas[profundidad]++)
         {
@@ -124,18 +131,19 @@ void jugadasReinas(int TablaReinas[], int nReinas, int profundidad)
 
 int main()
 {
-
     string nReinasString;
     int profundidad = 0;
 
+    cout << "+---------------- Juego de las N Reinas ----------------+\n\n";
+
     do
     {
-        cout << "Cantidad de Reinas a Agregar: ";
+        cout << "Ingrese la cantidad de reinas a colocar: ";
         cin >> nReinasString;
 
         if (Entrada(nReinasString))
         {
-            cout << "\nMostrando Soluciones: \n\n";
+            cout << "\nBuscando Soluciones para " << nReinasString << " reinas:\n\n";
 
             int nReinasInt = stoi(nReinasString);
             int* reinasArray = new int[nReinasInt];
@@ -149,11 +157,12 @@ int main()
         }
         else
         {
-            cout << "Valor Inválido. Intente Nuevamente. \n\n";
+            cout << "\n¡Valor Inválido! Por favor, ingrese un número entero positivo.\n\n";
         }
 
     } while (!Entrada(nReinasString));
 
-    return 0;
+    cout << "\n¡Gracias por jugar al Juego de las N Reinas!\n";
 
+    return 0;
 }
