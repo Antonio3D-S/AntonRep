@@ -162,7 +162,5 @@ int main()
 
     } while (!Entrada(nReinasString));
 
-    cout << "\n¡Gracias por jugar al Juego de las N Reinas!\n";
-
     return 0;
 }
